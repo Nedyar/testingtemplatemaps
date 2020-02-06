@@ -4,8 +4,8 @@
 
 class VelocityComponent : public Component {
 public:
-    VelocityComponent(const uint32_t id, const float vx = 0, const float vy = 0, const float vz = 0, const float spd = 70);
-    ~VelocityComponent();
+    explicit VelocityComponent(uint32_t id, float vx = 0, float vy = 0, float vz = 0, float spd = 70);
+    ~VelocityComponent() override; // si no hace override, heredas miembros, pero no hay vtable aunque Component tenga destructor virtualk
     
 
     void resetAllVelocity();

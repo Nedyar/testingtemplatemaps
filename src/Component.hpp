@@ -1,10 +1,11 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 class Component {
 public:
-    virtual ~Component() = default;
-    uint32_t entityId;
+    explicit Component(uint32_t id) : entityId(id) { } // velocity no heredaba de Component porque no hacia nada con el, por poner algo he hecho que este valor lo inicialice el padre
+    virtual ~Component() = default; // velocity ahora hace override de este metodo (no lo hacia antes, y asi sabemos que sí hereda)
+    uint32_t entityId { };
 protected:
 };

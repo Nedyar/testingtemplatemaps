@@ -1,7 +1,7 @@
 #include "EntityManager.hpp"
 #include "VelocityComponent.hpp"
 
-int main(void) {
+int main() {
     EntityManager em;
 
     em.addComponent<VelocityComponent>(0);
