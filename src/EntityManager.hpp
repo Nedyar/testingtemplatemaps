@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include "Component.hpp"
+#include "VelocityComponent.hpp"
 
 class EntityManager {
 public:
@@ -17,17 +18,18 @@ public:
     // el compilador no sabe ni cuantas funciones ni de que tipos va a tener que crearlas
     template <typename T>
     T  &getComponent(uint32_t id) {
-        return components[typeid(T).name()][id];
+        
+        return static_cast<T&>(components.at(typeid(T).name()).at(id));
     }
 
     template <typename T>
-    void addComponent(uint32_t id) {
-        components[typeid(T).name()].emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(id));
+    void createComponent(uint32_t id) {
+        components.at(typeid(T).name()).emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(id));
     }
 
     template <typename T>
     void eraseComponent(uint32_t id) {
-        components[typeid(T).name()].erase(id);
+        components.at(typeid(T).name()).erase(id);
     }
 
 private:
