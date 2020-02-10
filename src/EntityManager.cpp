@@ -1,8 +1,13 @@
 #include "EntityManager.hpp"
-#include "VelocityComponent.hpp"
 
 
 EntityManager::EntityManager()
-    : components{} {
-    	components.emplace(std::piecewise_construct, std::forward_as_tuple(typeid(VelocityComponent).name()), std::forward_as_tuple());
+	{
+		velocitiesStorage = new ComponentStorage<VelocityComponent>(255);
+		situationsStorage = new ComponentStorage<SituationComponent>(255);
+}
+
+EntityManager::~EntityManager() {
+	delete velocitiesStorage;
+	delete situationsStorage;
 }

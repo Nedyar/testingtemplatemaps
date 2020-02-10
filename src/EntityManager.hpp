@@ -1,39 +1,102 @@
 #pragma once
 
-#include <cstdint>
-#include <unordered_map>
-
-#include "Component.hpp"
+#include "unordered_map"
+#include "ComponentStorage.hpp"
 #include "VelocityComponent.hpp"
+#include "SituationComponent.hpp"
 
 class EntityManager {
 public:
 
-    EntityManager();
-    ~EntityManager() = default;
+    //////////////////////////////////////////////////
+    //              THE RULE OF THE 3               //
+    //////////////////////////////////////////////////
 
-    // las templates deben SIEMPRE definirse en el .hpp
-    // esto es porque la T se convierte en "VelocityComponent" en tu caso
-    // entonces si incluyes este archivo pero la plantilla no esta definida
-    // el compilador no sabe ni cuantas funciones ni de que tipos va a tener que crearlas
-    template <typename T>
-    T  &getComponent(uint32_t id) {
-        
-        return static_cast<T&>(components.at(typeid(T).name()).at(id));
-    }
+    explicit EntityManager();
+    ~EntityManager();
+    EntityManager(const EntityManager &em) = delete;
 
-    template <typename T>
-    void createComponent(uint32_t id) {
-        components.at(typeid(T).name()).emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(id));
-    }
+    //////////////////////////////////////////////////
+    //              	GET COMPONENTS              //
+    //////////////////////////////////////////////////
 
     template <typename T>
-    void eraseComponent(uint32_t id) {
-        components.at(typeid(T).name()).erase(id);
+    T  &get(const uint32_t id) {
+        const char *typeName = typeid(T).name();
+
+        return static_cast<T &>(*componentMap[typeName][id]);
+
+    };
+
+    template <typename T>
+    ComponentStorage<T>  &get() {
+        return *determinateStorage<T>();
+    };
+
+
+    //////////////////////////////////////////////////
+    // 	              CREATE COMPONENT 				//
+    //////////////////////////////////////////////////
+
+    template <typename T>
+    void create(const uint32_t id) {
+        const char *typeName = typeid(T).name();
+
+        if (!componentMap[typeName].count(id)) {
+            ComponentStorage<T> *storage = determinateStorage<T>();
+
+            //if (storage) {
+            Component *created_component = storage->emplace_back(id);
+
+            if (created_component) {
+                componentMap[typeName].emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(created_component));
+            }
+            //}
+        }
+    };
+
+    //////////////////////////////////////////////////
+    // 	              ERASE COMPONENT 				//
+    //////////////////////////////////////////////////
+
+    template <typename T>
+    void erase(const uint32_t id) {
+        ComponentStorage<T> *storage = determinateStorage<T>();
+
+        //if (storage) {
+        const char *typeName = typeid(T).name();
+        if (componentMap[typeName].count(id)) {
+            Component *componentToDelete = componentMap[typeName][id];
+
+            uint32_t idComponentMoved = storage->erase((T *)componentToDelete);
+            componentMap[typeName][idComponentMoved] = componentToDelete;
+
+            componentMap[typeName].erase(id);
+        }
+        //}
     }
 
 private:
-    std::unordered_map<const char *, std::unordered_map<uint32_t, Component>> components;
 
+    //////////////////////////////////////////////////
+    //       	COMPONENT TYPES DEFINITON 			//
+    //////////////////////////////////////////////////
+
+    template<typename T>
+    ComponentStorage<T> *determinateStorage() {
+        const char *typeName = typeid(T).name();
+
+        if (typeName == typeid(VelocityComponent).name())
+            return (ComponentStorage<T> *)velocitiesStorage;
+
+        else if (typeName == typeid(SituationComponent).name())
+            return (ComponentStorage<T> *)situationsStorage;
+
+        return nullptr;
+    }
+
+    ComponentStorage<VelocityComponent> *velocitiesStorage;
+    ComponentStorage<SituationComponent> *situationsStorage;
+    unordered_map<const char *, unordered_map<uint32_t, Component *>> componentMap;
 
 };
