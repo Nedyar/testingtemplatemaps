@@ -21,7 +21,7 @@ public:
     //////////////////////////////////////////////////
 
     template <typename T>
-    T  &get(const uint32_t id) {
+    T  &getComponent(const uint32_t id) {
         const char *typeName = typeid(T).name();
 
         return static_cast<T &>(*componentMap[typeName][id]);
@@ -29,7 +29,7 @@ public:
     };
 
     template <typename T>
-    ComponentStorage<T>  &get() {
+    ComponentStorage<T>  &getComponents() {
         return *determinateStorage<T>();
     };
 
@@ -39,7 +39,7 @@ public:
     //////////////////////////////////////////////////
 
     template <typename T>
-    void create(const uint32_t id) {
+    void createComponent(const uint32_t id) {
         const char *typeName = typeid(T).name();
 
         if (!componentMap[typeName].count(id)) {
@@ -60,7 +60,7 @@ public:
     //////////////////////////////////////////////////
 
     template <typename T>
-    void erase(const uint32_t id) {
+    void eraseComponent(const uint32_t id) {
         ComponentStorage<T> *storage = determinateStorage<T>();
 
         //if (storage) {

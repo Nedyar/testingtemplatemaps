@@ -23,12 +23,12 @@ void printSit(SituationComponent &sit) {
 void printVector(EntityManager &em) {
     cout << "\nStorage:" << endl;
     cout << "\t<Velocities: ";
-    for (auto &component : em.get<VelocityComponent>())
+    for (auto &component : em.getComponents<VelocityComponent>())
         printVel(component);
 
 
     cout << "\n\t<Situations: ";
-    for (auto &component : em.get<SituationComponent>())
+    for (auto &component : em.getComponents<SituationComponent>())
         printSit(component);
 }
 
@@ -37,34 +37,34 @@ int main() {
 
     printVector(em);
 
-    em.create<SituationComponent>(0);
-    em.create<SituationComponent>(1);
-    em.create<SituationComponent>(0);
+    em.createComponent<SituationComponent>(0);
+    em.createComponent<SituationComponent>(1);
+    em.createComponent<SituationComponent>(0);
 
 
-    em.create<VelocityComponent>(0);
-    em.create<VelocityComponent>(1);
-    em.create<VelocityComponent>(2);
-    em.create<VelocityComponent>(2);
-    em.create<VelocityComponent>(109);
+    em.createComponent<VelocityComponent>(0);
+    em.createComponent<VelocityComponent>(1);
+    em.createComponent<VelocityComponent>(2);
+    em.createComponent<VelocityComponent>(2);
+    em.createComponent<VelocityComponent>(109);
     printVector(em);
     
-    em.get<VelocityComponent>(2).velocityX = -4;
-    em.get<VelocityComponent>(2).velocityY = 4;
-    em.get<VelocityComponent>(2).velocityZ = 934;
-    em.get<VelocityComponent>(2).speed = 1123;
-    em.get<VelocityComponent>(2).speed2 = 124;
+    em.getComponent<VelocityComponent>(2).velocityX = -4;
+    em.getComponent<VelocityComponent>(2).velocityY = 4;
+    em.getComponent<VelocityComponent>(2).velocityZ = 934;
+    em.getComponent<VelocityComponent>(2).speed = 1123;
+    em.getComponent<VelocityComponent>(2).speed2 = 124;
     printVector(em);
 
-    em.erase<VelocityComponent>(1);
-    em.erase<VelocityComponent>(0);
-    em.erase<VelocityComponent>(-1);
-    em.erase<VelocityComponent>(1090);
+    em.eraseComponent<VelocityComponent>(1);
+    em.eraseComponent<VelocityComponent>(0);
+    em.eraseComponent<VelocityComponent>(-1);
+    em.eraseComponent<VelocityComponent>(1090);
 
 
     printVector(em);
 
-    em.get<int>();
+    //em.getComponent<int>();
 
 
 
