@@ -8,7 +8,6 @@ public:
     //SituationComponent(SituationComponent &c) = delete;
     
     ~SituationComponent();
-
     float x;
     float y;
     float z;

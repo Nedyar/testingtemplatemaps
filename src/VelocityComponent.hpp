@@ -14,6 +14,5 @@ public:
     float velocityY;
     float velocityZ;
     float speed;
-    uint32_t speed2;
 private:
 };
